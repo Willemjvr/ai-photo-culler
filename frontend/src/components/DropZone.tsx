@@ -21,8 +21,9 @@ export default function DropZone({ onDrop, uploading, progress }: DropZoneProps)
 
   const extractFiles = useCallback((items: DataTransferItemList | FileList): File[] => {
     const files: File[] = []
-    const webkitItems = (items as DataTransferItemList)
-    if (webkitItems.length && webkitItems[0].webkitGetAsEntry) {
+    const webkitItems = items as DataTransferItemList
+    const first = webkitItems[0] as any
+    if (webkitItems.length && typeof first.webkitGetAsEntry === 'function') {
       // Walk directory entries
       const entries: FileSystemEntry[] = []
       for (let i = 0; i < webkitItems.length; i++) {
@@ -93,7 +94,7 @@ export default function DropZone({ onDrop, uploading, progress }: DropZoneProps)
       <input
         ref={inputRef}
         type="file"
-        webkitdirectory="true"
+        {...{ webkitdirectory: "true" as string }}
         multiple
         className="hidden"
         onChange={handleInputChange}
